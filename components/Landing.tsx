@@ -1,4 +1,4 @@
-
+"use client"
 import Link from "next/link";
 import {
   ArrowDownRight,
@@ -11,6 +11,9 @@ import {
   Route,
   Sparkles,
 } from "lucide-react";
+import { logIn, logOut } from "@/lib/auth-actions";
+
+
 
 const destinations = [
   {
@@ -88,6 +91,13 @@ export default function Landing() {
             <Link href="#about" className="transition hover:text-[#214b37]">
               About
             </Link>
+            <button className="transition hover:text-[#214b37]" onClick={() => logIn()}>
+              Sign in
+            </button>
+
+            <button className="transition hover:text-[#DC143C]" onClick={() => logOut()}>
+              Log Out
+            </button>
           </div>
 
           <Link
@@ -155,7 +165,7 @@ export default function Landing() {
             className="relative min-h-[430px] overflow-hidden rounded-[2rem] bg-cover bg-center shadow-2xl shadow-[#304332]/10 sm:min-h-[530px]"
             style={{
               backgroundImage:
-                "linear-gradient(180deg, transparent 42%, rgba(15,36,27,.72) 100%), url('https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=1200&q=90')",
+                "linear-gradient(180deg, transparent 42%, rgba(15,36,27,.72) 100%), url('/hero.jpg')"
             }}
           >
             <div className="absolute left-5 top-5 rounded-full border border-white/30 bg-white/90 px-4 py-2 text-xs font-semibold text-[#214b37] backdrop-blur-md sm:left-7 sm:top-7">
@@ -410,7 +420,7 @@ export default function Landing() {
             roam<span className="text-[#d88357]">wise</span>
           </Link>
           <p>Made for the journeys that stay with you.</p>
-          <p>© {new Date().getFullYear()} Roamwise</p>
+          <p>Roamwise</p>
         </div>
       </footer>
     </main>
