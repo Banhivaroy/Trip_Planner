@@ -1,5 +1,5 @@
-import Plan from "@/components/Plan";
+import Destinations from "@/components/Destinations";
 
 export default function PlanPage(){
-    return <Plan/>
+    return <Destinations/>
 }
