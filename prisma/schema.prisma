@@ -76,10 +76,11 @@ model Trip {
   destination String
   startDate   DateTime?
   endDate     DateTime?
-  travelers   String   @default("2")
-  style       String   @default("balanced")
-  budget      String   @default("comfortable")
-  interests   String[] @default([])
+  // travelers   String   @default("2")
+  // style       String   @default("balanced")
+  // budget      String   @default("comfortable")
+  // interests   String[] @default([])
+  stay        String @default("this is default hotel name")
 
   userId      String?  @map("user_id")
   user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)

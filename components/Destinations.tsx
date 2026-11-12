@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import { Search, MapPin, Star, Calendar } from 'lucide-react';
+import Link from 'next/link';
 
 interface Destination {
   id: string;
@@ -171,10 +172,10 @@ export default function Destinations() {
                 </div>
 
                 <div className="mt-5 pt-4 border-t border-gray-100 flex items-end justify-end">
-                  <button className="flex items-center gap-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
-                    <Calendar className="w-4 h-4" />
+                  <Link href = "/nearby" className="flex items-center gap-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 px-4 py-2 rounded-lg text-sm font-semibold transition-colors" >
+                    <Calendar className="w-4 h-4"/>
                     Plan Trip
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>
