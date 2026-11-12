@@ -10,7 +10,6 @@ interface Destination {
   location: string;
   category: 'Beach' | 'Mountain' | 'City' | 'Cultural' | 'Adventure';
   rating: number;
-  pricePerNight: number;
   description: string;
 }
 
@@ -21,7 +20,6 @@ const SAMPLE_DESTINATIONS: Destination[] = [
     location: 'Santorini, Greece',
     category: 'Beach',
     rating: 4.9,
-    pricePerNight: 240,
     description: 'Iconic white-washed buildings overlooking the Aegean Sea with world-famous sunset views.',
   },
   {
@@ -30,7 +28,7 @@ const SAMPLE_DESTINATIONS: Destination[] = [
     location: 'Kyoto, Japan',
     category: 'Cultural',
     rating: 4.8,
-    pricePerNight: 180,
+   
     description: 'Explore historic temples, serene bamboo groves, and traditional tea houses.',
   },
   {
@@ -39,7 +37,7 @@ const SAMPLE_DESTINATIONS: Destination[] = [
     location: 'Interlaken, Switzerland',
     category: 'Mountain',
     rating: 4.95,
-    pricePerNight: 310,
+   
     description: 'Dramatic alpine scenery, crisp mountain air, and year-round outdoor sports.',
   },
   {
@@ -48,7 +46,7 @@ const SAMPLE_DESTINATIONS: Destination[] = [
     location: 'New York City, USA',
     category: 'City',
     rating: 4.7,
-    pricePerNight: 290,
+    
     description: 'Immerse yourself in vibrant arts, world-class dining, and non-stop energy.',
   },
   {
@@ -57,7 +55,7 @@ const SAMPLE_DESTINATIONS: Destination[] = [
     location: 'Torres del Paine, Chile',
     category: 'Adventure',
     rating: 4.9,
-    pricePerNight: 210,
+   
     description: 'Rugged granite peaks, pristine glaciers, and breathtaking trekking routes.',
   },
 ];
@@ -161,21 +159,6 @@ export default function Destinations() {
             ))}
           </div>
 
-          <div className="flex items-center gap-3 min-w-[220px]">
-            <Filter className="w-4 h-4 text-gray-400" />
-            <span className="text-sm font-medium text-gray-600">
-              Max: Rs.{maxPrice}/night
-            </span>
-            <input
-              type="range"
-              min={100}
-              max={500}
-              step={10}
-              value={maxPrice}
-              onChange={(e) => setMaxPrice(Number(e.target.value))}
-              className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
-            />
-          </div>
         </div>
       </div>
 

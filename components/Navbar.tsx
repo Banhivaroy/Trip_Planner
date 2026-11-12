@@ -1,9 +1,9 @@
 "use client"
 import Link from "next/link";
-import { Compass,ArrowRight } from "lucide-react";
+import Image from "next/image"; // 1. Import the Image component
+import { ArrowRight } from "lucide-react";
 import { logIn, logOut } from "@/lib/auth-actions";
 import { Session } from "next-auth";
-
 
 export default function Navbar({session}:{session : Session | null}){
     return(
@@ -15,12 +15,17 @@ export default function Navbar({session}:{session : Session | null}){
           className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 md:px-8"
         >
           <Link href="/" className="flex items-center gap-2">
-            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#214b37] text-white">
-              <Compass size={23} />
-            </span>
-            <span className="text-xl font-bold tracking-tight">
-              Next<span className="text-[#db8457]">Trip</span>
-            </span>
+            {/* 2. Replaced the empty span with Next.js Image */}
+            <div className="relative flex h-20 w-20 items-center justify-center overflow-hidden">
+              <Image 
+                src="/logo.png" 
+                alt="NextTrip Logo" 
+                fill 
+                className="object-contain"
+                priority
+              />
+            </div> 
+            
           </Link>
 
           <div className="hidden items-center gap-8 text-sm font-damion text-[#66736a] md:flex">
@@ -48,7 +53,7 @@ export default function Navbar({session}:{session : Session | null}){
 
           <Link
             href="/plan"
-            className="inline-flex items-center gap-2 rounded-full bg-[#214b37] px-5 py-3 text-sm font-damion text-white transition hover:bg-[#173626]"
+            className="inline-flex items-center gap-2 rounded-full border border-black bg-black px-5 py-3 text-sm font-damion text-white transition-all duration-200 hover:bg-white hover:text-black"
           >
             Plan a trip <ArrowRight size={16} />
           </Link>

@@ -30,7 +30,6 @@ export async function GET(request: Request) {
           location: item.display_name,
           description: item.display_name,
           category: 'City',
-          pricePerNight: 200,
           rating: 4.8,
         }))
       : [];
