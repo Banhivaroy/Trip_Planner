@@ -2,13 +2,13 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
-import { Search, MapPin, Star, Filter, Calendar } from 'lucide-react';
+import { Search, MapPin, Star, Calendar } from 'lucide-react';
 
 interface Destination {
   id: string;
   title: string;
   location: string;
-  category: 'Beach' | 'Mountain' | 'City' | 'Cultural' | 'Adventure';
+  category?: string;
   rating: number;
   description: string;
 }
@@ -28,7 +28,6 @@ const SAMPLE_DESTINATIONS: Destination[] = [
     location: 'Kyoto, Japan',
     category: 'Cultural',
     rating: 4.8,
-   
     description: 'Explore historic temples, serene bamboo groves, and traditional tea houses.',
   },
   {
@@ -37,7 +36,6 @@ const SAMPLE_DESTINATIONS: Destination[] = [
     location: 'Interlaken, Switzerland',
     category: 'Mountain',
     rating: 4.95,
-   
     description: 'Dramatic alpine scenery, crisp mountain air, and year-round outdoor sports.',
   },
   {
@@ -46,7 +44,6 @@ const SAMPLE_DESTINATIONS: Destination[] = [
     location: 'New York City, USA',
     category: 'City',
     rating: 4.7,
-    
     description: 'Immerse yourself in vibrant arts, world-class dining, and non-stop energy.',
   },
   {
@@ -55,23 +52,18 @@ const SAMPLE_DESTINATIONS: Destination[] = [
     location: 'Torres del Paine, Chile',
     category: 'Adventure',
     rating: 4.9,
-   
     description: 'Rugged granite peaks, pristine glaciers, and breathtaking trekking routes.',
   },
 ];
 
-const CATEGORIES = ['All', 'Beach', 'Mountain', 'City', 'Cultural', 'Adventure'] as const;
-
 export default function Destinations() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  const [maxPrice, setMaxPrice] = useState<number>(500);
 
   // States for API search results & loading status
   const [apiResults, setApiResults] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // FIXED: Debounced API fetch wrapped inside useEffect
+  // Debounced API fetch wrapped inside useEffect
   useEffect(() => {
     if (!searchQuery.trim()) {
       setApiResults([]);
@@ -89,76 +81,53 @@ export default function Destinations() {
       } finally {
         setIsLoading(false);
       }
-    }, 300); // 300ms delay to optimize requests
+    }, 300);
 
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  // Combine or switch between live API results and sample cards
- 
+  // Filter destinations based exclusively on the search query
   const filteredDestinations = useMemo(() => {
-    // If user is searching, use API results; otherwise fallback to sample data
     const sourceData = apiResults.length > 0 ? apiResults : SAMPLE_DESTINATIONS;
 
+    if (!searchQuery.trim()) return sourceData;
+
     return sourceData.filter((dest) => {
-      const matchesSearch =
-        dest.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        dest.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        dest.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const title = dest.title || dest.name || '';
+      const location = dest.location || dest.city || '';
+      const description = dest.description || '';
 
-      const matchesCategory =
-        selectedCategory === 'All' || dest.category === selectedCategory;
-
-      const matchesPrice = dest.pricePerNight <= maxPrice;
-
-      return matchesSearch && matchesCategory && matchesPrice;
+      return (
+        title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        description.toLowerCase().includes(searchQuery.toLowerCase())
+      );
     });
-  }, [apiResults, searchQuery, selectedCategory, maxPrice]);
+  }, [apiResults, searchQuery]);
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">
+        <h1 className="text-3xl font-notoSerifBalinese text-gray-900 sm:text-4xl">
           Explore Destinations
         </h1>
         <p className="mt-2 text-gray-600">
-          Find and filter top spots for your next trip.
+          Find top spots for your next trip.
         </p>
       </div>
 
-      {/* Filter Controls */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 mb-8 space-y-4">
-        {/* Search Bar */}
-        <div className="relative">
+      {/* Search Bar Container */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 mb-8">
+        <div className="relative w-full">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by city, country, or keyword..."
-            className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all font-notoSerifBalinese"
           />
-        </div>
-
-        {/* Categories & Price Filter */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-2 border-t border-gray-100">
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
-            {CATEGORIES.map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
-                  selectedCategory === category
-                    ? 'bg-blue-600 text-white shadow-sm'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-
         </div>
       </div>
 
@@ -169,13 +138,15 @@ export default function Destinations() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredDestinations.map((dest) => (
             <div
-              key={dest.id}
+              key={dest.id || dest._id}
               className="group bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col"
             >
               <div className="relative h-52 w-full overflow-hidden bg-gray-100">
-                <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-semibold text-gray-800 z-10">
-                  {dest.category}
-                </span>
+                {dest.category && (
+                  <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-semibold text-gray-800 z-10">
+                    {dest.category}
+                  </span>
+                )}
               </div>
 
               <div className="p-5 flex-1 flex flex-col justify-between">
@@ -191,7 +162,7 @@ export default function Destinations() {
                     </span>
                   </div>
 
-                  <h2 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                  <h2 className="text-lg font-notoSerifBalinese text-gray-900 group-hover:text-blue-600 transition-colors">
                     {dest.title}
                   </h2>
                   <p className="mt-2 text-sm text-gray-600 line-clamp-2">
@@ -199,13 +170,7 @@ export default function Destinations() {
                   </p>
                 </div>
 
-                <div className="mt-5 pt-4 border-t border-gray-100 flex items-center justify-between">
-                  <div>
-                    <span className="text-xl font-bold text-gray-900">
-                      ${dest.pricePerNight}
-                    </span>
-                    <span className="text-xs text-gray-500"> / night</span>
-                  </div>
+                <div className="mt-5 pt-4 border-t border-gray-100 flex items-end justify-end">
                   <button className="flex items-center gap-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
                     <Calendar className="w-4 h-4" />
                     Plan Trip
@@ -219,14 +184,10 @@ export default function Destinations() {
         <div className="text-center py-16 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
           <p className="text-gray-500 text-lg">No destinations found matching your criteria.</p>
           <button
-            onClick={() => {
-              setSearchQuery('');
-              setSelectedCategory('All');
-              setMaxPrice(500);
-            }}
+            onClick={() => setSearchQuery('')}
             className="mt-3 text-sm font-semibold text-blue-600 hover:underline"
           >
-            Reset Filters
+            Clear Search
           </button>
         </div>
       )}

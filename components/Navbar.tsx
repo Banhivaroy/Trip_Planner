@@ -28,15 +28,9 @@ export default function Navbar({session}:{session : Session | null}){
             
           </Link>
 
-          <div className="hidden items-center gap-8 text-sm font-damion text-[#66736a] md:flex">
+          <div className="hidden items-center gap-8 text-sm font-kalam text-[#66736a] md:flex">
             {session ? (
             <>
-            <Link href="#discover" className="transition hover:text-[#214b37]">
-              Discover
-            </Link>
-            <Link href="#features" className="transition hover:text-[#214b37]">
-              Features
-            </Link>
             <Link href="#about" className="transition hover:text-[#214b37]">
               About
             </Link>

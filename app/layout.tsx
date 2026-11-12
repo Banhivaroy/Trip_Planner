@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Kalam } from "next/font/google";
+import { Geist, Geist_Mono, Noto_Serif_Balinese } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,14 +12,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const kalam = Kalam({
-  subsets: ["latin", "devanagari"], // Include devanagari for Hindi/regional script support if needed
-  weight: ["300", "400", "700"],
-  variable: "--font-kalam",
-  display: "swap",
+const notoSerifBalinese = Noto_Serif_Balinese({
+  weight: '400', // Noto Serif Balinese typically comes in regular (400) weight
+  subsets: ['balinese', 'latin'], // Include 'balinese' subset along with latin if needed
+  display: 'swap',
+  variable: '--font-noto-serif-balinese',
 });
-
-
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -30,7 +28,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${kalam.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${notoSerifBalinese.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
