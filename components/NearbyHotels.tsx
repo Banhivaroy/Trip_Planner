@@ -77,7 +77,7 @@ export default function NearbyHotelsSearch() {
   const router = useRouter();
   const tripId = searchParams.get("tripId");
 
-  // Footer Scroll Tracking
+  // Footer Scroll Tracking via Window Scroll
   const footerRef = useRef<HTMLElement>(null);
   const [hasVisitedFooter, setHasVisitedFooter] = useState(false);
 
@@ -93,26 +93,25 @@ export default function NearbyHotelsSearch() {
   const [isLocating, setIsLocating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-// Observe when any part of the footer enters the viewport
+  // Track window scroll position to hide arrow when near the bottom
   useEffect(() => {
-    const footerEl = footerRef.current;
-    if (!footerEl || hasVisitedFooter) return;
+    const handleScroll = () => {
+      if (hasVisitedFooter) return;
+      const scrollPosition = window.innerHeight + window.scrollY;
+      const threshold = document.documentElement.scrollHeight - 100; // 100px from bottom
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setHasVisitedFooter(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0 } // Triggers the moment the top edge of the footer hits the viewport
-    );
+      if (scrollPosition >= threshold) {
+        setHasVisitedFooter(true);
+      }
+    };
 
-    observer.observe(footerEl);
-    return () => observer.disconnect();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Check on initial load in case page is short
+
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [hasVisitedFooter]);
-  
-const handleScrollToFooter = () => {
+
+  const handleScrollToFooter = () => {
     setHasVisitedFooter(true);
     footerRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   };
@@ -398,7 +397,7 @@ const handleScrollToFooter = () => {
         )}
       </div>
 
-      {/* Floating Scroll-to-Footer Down Arrow */}
+      {/* Floating Centered Floating Down Arrow */}
       {!hasVisitedFooter && (
         <button
           type="button"
