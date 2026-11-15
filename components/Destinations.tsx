@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useMemo, useEffect } from 'react';
-import Image from 'next/image';
 import { Search, MapPin, Star, Calendar } from 'lucide-react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface Destination {
   id: string;
@@ -58,11 +57,11 @@ const SAMPLE_DESTINATIONS: Destination[] = [
 ];
 
 export default function Destinations() {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
-
-  // States for API search results & loading status
   const [apiResults, setApiResults] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   // Debounced API fetch wrapped inside useEffect
   useEffect(() => {
@@ -87,10 +86,32 @@ export default function Destinations() {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  // Filter destinations based exclusively on the search query
+  // Handle Writing Destination to Neon DB and redirecting
+  const handlePlanTrip = async (destinationTitle: string, locationStr: string) => {
+    setIsSaving(true);
+    try {
+      const res = await fetch('/api/trips', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          destination: `${destinationTitle} (${locationStr})`,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success && data.trip?.id) {
+        // Redirect to nearby hotels carrying the database tripId
+        router.push(`/nearby?tripId=${data.trip.id}`);
+      }
+    } catch (err) {
+      console.error('Failed to save destination to DB:', err);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const filteredDestinations = useMemo(() => {
     const sourceData = apiResults.length > 0 ? apiResults : SAMPLE_DESTINATIONS;
-
     if (!searchQuery.trim()) return sourceData;
 
     return sourceData.filter((dest) => {
@@ -108,17 +129,13 @@ export default function Destinations() {
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-notoSerifBalinese text-gray-900 sm:text-4xl">
           Explore Destinations
         </h1>
-        <p className="mt-2 text-gray-600">
-          Find top spots for your next trip.
-        </p>
+        <p className="mt-2 text-gray-600">Find top spots for your next trip.</p>
       </div>
 
-      {/* Search Bar Container */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 mb-8">
         <div className="relative w-full">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -127,12 +144,11 @@ export default function Destinations() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by city, country, or keyword..."
-            className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all font-notoSerifBalinese"
+            className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-notoSerifBalinese"
           />
         </div>
       </div>
 
-      {/* Grid Results */}
       {isLoading ? (
         <div className="text-center py-16 text-gray-500">Loading destinations...</div>
       ) : filteredDestinations.length > 0 ? (
@@ -172,10 +188,15 @@ export default function Destinations() {
                 </div>
 
                 <div className="mt-5 pt-4 border-t border-gray-100 flex items-end justify-end">
-                  <Link href = "/nearby" className="flex items-center gap-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 px-4 py-2 rounded-lg text-sm font-semibold transition-colors" >
-                    <Calendar className="w-4 h-4"/>
-                    Plan Trip
-                  </Link>
+                  <button
+                    type="button"
+                    disabled={isSaving}
+                    onClick={() => handlePlanTrip(dest.title, dest.location)}
+                    className="flex items-center gap-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 px-4 py-2 rounded-lg text-sm font-semibold transition-colors cursor-pointer"
+                  >
+                    <Calendar className="w-4 h-4" />
+                    {isSaving ? "Saving..." : "Plan Trip"}
+                  </button>
                 </div>
               </div>
             </div>
