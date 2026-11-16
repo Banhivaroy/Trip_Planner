@@ -140,9 +140,9 @@ export default function TripSummary({ tripId }: TripSummaryProps) {
         {/* Header Title */}
         <div className="text-center space-y-2">
           <div className="inline-flex items-center justify-center p-3 bg-[#1e3329]/10 text-[#1e3329] rounded-full mb-1">
-            <CheckCircle2 size={28} />
+            <ClipboardPenLine size={28} />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-notoSerifBalinese text-slate-900 tracking-tight">
             Your Trip Summary
           </h1>
           <p className="text-sm text-slate-500 font-notoSerifBalinese">
@@ -156,8 +156,7 @@ export default function TripSummary({ tripId }: TripSummaryProps) {
           className="bg-white rounded-2xl shadow-md border border-slate-200 p-6 sm:p-8 space-y-6"
         >
           <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-            <ClipboardPenLine size={25}/>
-            <span className="text-xs text-slate-400 font-mono">
+            <span className="text-xs text-slate-800 font-mono">
               Trip id: {trip.id.slice(0, 8).toUpperCase()}
             </span>
           </div>
@@ -168,7 +167,7 @@ export default function TripSummary({ tripId }: TripSummaryProps) {
               <MapPin size={22} />
             </div>
             <div>
-              <span className="block text-xs font-notoSerifBalinese tracking-wider text-slate-400 uppercase">
+              <span className="block text-xs font-notoSerifBalinese tracking-wider text-slate-800 uppercase">
                 Destination
               </span>
               <h2 className="text-lg font-notoSerifBalinese text-slate-900 mt-0.5">
@@ -183,7 +182,7 @@ export default function TripSummary({ tripId }: TripSummaryProps) {
               <Building size={22} />
             </div>
             <div>
-              <span className="block text-xs font-notoSerifBalinese tracking-wider text-slate-400 uppercase">
+              <span className="block text-xs font-notoSerifBalinese tracking-wider text-slate-800 uppercase">
                 Selected Hotel
               </span>
               <h2 className="text-lg font-notoSerifBalinese text-slate-900 mt-0.5">
@@ -199,7 +198,7 @@ export default function TripSummary({ tripId }: TripSummaryProps) {
                 <Calendar size={20} />
               </div>
               <div>
-                <span className="block text-xs font-notoSerifBalinese tracking-wider text-slate-400 uppercase">
+                <span className="block text-xs font-notoSerifBalinese tracking-wider text-slate-800 uppercase">
                   Check-In Date
                 </span>
                 <span className="text-sm font-bold text-slate-900 mt-0.5 block">
@@ -220,7 +219,7 @@ export default function TripSummary({ tripId }: TripSummaryProps) {
                 <Calendar size={20} />
               </div>
               <div>
-                <span className="block text-xs font-notoSerifBalinese tracking-wider text-slate-400 uppercase">
+                <span className="block text-xs font-notoSerifBalinese tracking-wider text-slate-800 uppercase">
                   Check-Out Date
                 </span>
                 <span className="text-sm font-bold text-slate-900 mt-0.5 block">
