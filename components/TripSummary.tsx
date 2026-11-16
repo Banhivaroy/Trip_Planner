@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, ArrowDown, Calendar, MapPin, Building, CheckCircle2, Download } from "lucide-react";
+import { ArrowLeft, ArrowDown, Calendar, MapPin, Building, CheckCircle2, Download, ClipboardPenLine } from "lucide-react";
 
 interface TripData {
   id: string;
@@ -156,11 +156,9 @@ export default function TripSummary({ tripId }: TripSummaryProps) {
           className="bg-white rounded-2xl shadow-md border border-slate-200 p-6 sm:p-8 space-y-6"
         >
           <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-            <span className="text-xs font-notoSerifBalinese uppercase tracking-widest text-[#1e3329] font-semibold">
-              NextTrip Itinerary
-            </span>
+            <ClipboardPenLine size={25}/>
             <span className="text-xs text-slate-400 font-mono">
-              #{trip.id.slice(0, 8).toUpperCase()}
+              Trip id: {trip.id.slice(0, 8).toUpperCase()}
             </span>
           </div>
 
@@ -173,7 +171,7 @@ export default function TripSummary({ tripId }: TripSummaryProps) {
               <span className="block text-xs font-notoSerifBalinese tracking-wider text-slate-400 uppercase">
                 Destination
               </span>
-              <h2 className="text-lg font-bold text-slate-900 mt-0.5">
+              <h2 className="text-lg font-notoSerifBalinese text-slate-900 mt-0.5">
                 {trip.destination || "Not specified"}
               </h2>
             </div>
@@ -188,7 +186,7 @@ export default function TripSummary({ tripId }: TripSummaryProps) {
               <span className="block text-xs font-notoSerifBalinese tracking-wider text-slate-400 uppercase">
                 Selected Hotel
               </span>
-              <h2 className="text-lg font-bold text-slate-900 mt-0.5">
+              <h2 className="text-lg font-notoSerifBalinese text-slate-900 mt-0.5">
                 {trip.stay || "No hotel selected yet"}
               </h2>
             </div>
