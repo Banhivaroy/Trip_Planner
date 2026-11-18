@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useMemo, useEffect } from 'react';
-import { Search, MapPin, Star, Calendar } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useState, useMemo, useEffect } from "react";
+import { Search, MapPin, Star, Calendar } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface Destination {
   id: string;
@@ -15,55 +15,54 @@ interface Destination {
 
 const SAMPLE_DESTINATIONS: Destination[] = [
   {
-    id: '1',
-    title: 'Santorini Sunset Retreat',
-    location: 'Santorini, Greece',
-    category: 'Beach',
+    id: "1",
+    title: "Santorini Sunset Retreat",
+    location: "Santorini, Greece",
+    category: "Beach",
     rating: 4.9,
-    description: 'Iconic white-washed buildings overlooking the Aegean Sea with world-famous sunset views.',
+    description: "Iconic white-washed buildings overlooking the Aegean Sea with world-famous sunset views.",
   },
   {
-    id: '2',
-    title: 'Kyoto Cultural Discovery',
-    location: 'Kyoto, Japan',
-    category: 'Cultural',
+    id: "2",
+    title: "Kyoto Cultural Discovery",
+    location: "Kyoto, Japan",
+    category: "Cultural",
     rating: 4.8,
-    description: 'Explore historic temples, serene bamboo groves, and traditional tea houses.',
+    description: "Explore historic temples, serene bamboo groves, and traditional tea houses.",
   },
   {
-    id: '3',
-    title: 'Swiss Alps Hiking Expedition',
-    location: 'Interlaken, Switzerland',
-    category: 'Mountain',
+    id: "3",
+    title: "Swiss Alps Hiking Expedition",
+    location: "Interlaken, Switzerland",
+    category: "Mountain",
     rating: 4.95,
-    description: 'Dramatic alpine scenery, crisp mountain air, and year-round outdoor sports.',
+    description: "Dramatic alpine scenery, crisp mountain air, and year-round outdoor sports.",
   },
   {
-    id: '4',
-    title: 'Manhattan Skyline Escape',
-    location: 'New York City, USA',
-    category: 'City',
+    id: "4",
+    title: "Manhattan Skyline Escape",
+    location: "New York City, USA",
+    category: "City",
     rating: 4.7,
-    description: 'Immerse yourself in vibrant arts, world-class dining, and non-stop energy.',
+    description: "Immerse yourself in vibrant arts, world-class dining, and non-stop energy.",
   },
   {
-    id: '5',
-    title: 'Patagonia Wilderness Trek',
-    location: 'Torres del Paine, Chile',
-    category: 'Adventure',
+    id: "5",
+    title: "Patagonia Wilderness Trek",
+    location: "Torres del Paine, Chile",
+    category: "Adventure",
     rating: 4.9,
-    description: 'Rugged granite peaks, pristine glaciers, and breathtaking trekking routes.',
+    description: "Rugged granite peaks, pristine glaciers, and breathtaking trekking routes.",
   },
 ];
 
 export default function Destinations() {
   const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [apiResults, setApiResults] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  // Debounced API fetch wrapped inside useEffect
   useEffect(() => {
     if (!searchQuery.trim()) {
       setApiResults([]);
@@ -77,7 +76,7 @@ export default function Destinations() {
         const data = await res.json();
         setApiResults(data.destinations || []);
       } catch (err) {
-        console.error('Failed to fetch locations', err);
+        console.error("Failed to fetch locations", err);
       } finally {
         setIsLoading(false);
       }
@@ -86,13 +85,12 @@ export default function Destinations() {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  // Handle Writing Destination to Neon DB and redirecting
   const handlePlanTrip = async (destinationTitle: string, locationStr: string) => {
     setIsSaving(true);
     try {
-      const res = await fetch('/api/trips', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/trips", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           destination: `${destinationTitle} (${locationStr})`,
         }),
@@ -100,11 +98,10 @@ export default function Destinations() {
 
       const data = await res.json();
       if (data.success && data.trip?.id) {
-        // Redirect to nearby hotels carrying the database tripId
         router.push(`/nearby?tripId=${data.trip.id}`);
       }
     } catch (err) {
-      console.error('Failed to save destination to DB:', err);
+      console.error("Failed to save destination to DB:", err);
     } finally {
       setIsSaving(false);
     }
@@ -115,9 +112,9 @@ export default function Destinations() {
     if (!searchQuery.trim()) return sourceData;
 
     return sourceData.filter((dest) => {
-      const title = dest.title || dest.name || '';
-      const location = dest.location || dest.city || '';
-      const description = dest.description || '';
+      const title = dest.title || dest.name || "";
+      const location = dest.location || dest.city || "";
+      const description = dest.description || "";
 
       return (
         title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -128,15 +125,15 @@ export default function Destinations() {
   }, [apiResults, searchQuery]);
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <div className="mb-8">
-        <h1 className="text-3xl font-notoSerifBalinese text-gray-900 sm:text-4xl">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-notoSerifBalinese text-gray-900">
           Explore Destinations
         </h1>
-        <p className="mt-2 text-gray-600">Find top spots for your next trip.</p>
+        <p className="mt-1.5 text-sm sm:text-base text-gray-600">Find top spots for your next trip.</p>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 mb-8">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-3.5 sm:p-6 mb-6 sm:mb-8">
         <div className="relative w-full">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
           <input
@@ -144,7 +141,7 @@ export default function Destinations() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by city, country, or keyword..."
-            className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-notoSerifBalinese"
+            className="w-full pl-11 pr-4 py-3 text-base sm:text-sm rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-notoSerifBalinese"
           />
         </div>
       </div>
@@ -152,13 +149,13 @@ export default function Destinations() {
       {isLoading ? (
         <div className="text-center py-16 text-gray-500">Loading destinations...</div>
       ) : filteredDestinations.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
           {filteredDestinations.map((dest) => (
             <div
               key={dest.id || dest._id}
               className="group bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col"
             >
-              <div className="relative h-52 w-full overflow-hidden bg-gray-100">
+              <div className="relative h-44 sm:h-52 w-full overflow-hidden bg-gray-100">
                 {dest.category && (
                   <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-semibold text-gray-800 z-10">
                     {dest.category}
@@ -166,20 +163,20 @@ export default function Destinations() {
                 )}
               </div>
 
-              <div className="p-5 flex-1 flex flex-col justify-between">
+              <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="flex items-center text-xs text-gray-500 font-medium">
-                      <MapPin className="w-3.5 h-3.5 mr-1 text-blue-500" />
-                      {dest.location}
+                  <div className="flex items-center justify-between gap-2 mb-1">
+                    <span className="flex items-center text-xs text-gray-500 font-medium truncate">
+                      <MapPin className="w-3.5 h-3.5 mr-1 text-blue-500 shrink-0" />
+                      <span className="truncate">{dest.location}</span>
                     </span>
-                    <span className="flex items-center text-xs font-semibold text-gray-700">
+                    <span className="flex items-center text-xs font-semibold text-gray-700 shrink-0">
                       <Star className="w-3.5 h-3.5 mr-1 fill-amber-400 text-amber-400" />
                       {dest.rating}
                     </span>
                   </div>
 
-                  <h2 className="text-lg font-notoSerifBalinese text-gray-900 group-hover:text-blue-600 transition-colors">
+                  <h2 className="text-base sm:text-lg font-notoSerifBalinese text-gray-900 group-hover:text-blue-600 transition-colors">
                     {dest.title}
                   </h2>
                   <p className="mt-2 text-sm text-gray-600 line-clamp-2">
@@ -187,12 +184,12 @@ export default function Destinations() {
                   </p>
                 </div>
 
-                <div className="mt-5 pt-4 border-t border-gray-100 flex items-end justify-end">
+                <div className="mt-5 pt-4 border-t border-gray-100 flex items-center justify-end">
                   <button
                     type="button"
                     disabled={isSaving}
                     onClick={() => handlePlanTrip(dest.title, dest.location)}
-                    className="flex items-center gap-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 px-4 py-2 rounded-lg text-sm font-semibold transition-colors cursor-pointer"
+                    className="w-full sm:w-auto flex items-center justify-center gap-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 px-4 py-2.5 sm:py-2 rounded-lg text-sm font-semibold transition-colors cursor-pointer"
                   >
                     <Calendar className="w-4 h-4" />
                     {isSaving ? "Saving..." : "Plan Trip"}
@@ -203,10 +200,10 @@ export default function Destinations() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-16 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
-          <p className="text-gray-500 text-lg">No destinations found matching your criteria.</p>
+        <div className="text-center py-16 bg-gray-50 rounded-2xl border border-dashed border-gray-200 px-4">
+          <p className="text-gray-500 text-base sm:text-lg">No destinations found matching your criteria.</p>
           <button
-            onClick={() => setSearchQuery('')}
+            onClick={() => setSearchQuery("")}
             className="mt-3 text-sm font-semibold text-blue-600 hover:underline"
           >
             Clear Search

@@ -6,7 +6,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, ArrowDown } from "lucide-react";
 
-// --- Types ---
 interface Hotel {
   id: string;
   name: string;
@@ -20,7 +19,6 @@ interface Hotel {
   tag?: string;
 }
 
-// --- Mock Data ---
 const MOCK_HOTELS: Hotel[] = [
   {
     id: "h1",
@@ -77,28 +75,24 @@ export default function NearbyHotelsSearch() {
   const router = useRouter();
   const tripId = searchParams.get("tripId");
 
-  // Footer Scroll Tracking via Window Scroll
   const footerRef = useRef<HTMLElement>(null);
   const [hasVisitedFooter, setHasVisitedFooter] = useState(false);
 
-  // Search Form State
   const [location, setLocation] = useState("Loading destination...");
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
 
-  // Filter & Sort State
   const [maxPrice, setMaxPrice] = useState<number>(300);
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<"distance" | "price" | "rating">("distance");
   const [isLocating, setIsLocating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  // Track window scroll position to hide arrow when near the bottom
   useEffect(() => {
     const handleScroll = () => {
       if (hasVisitedFooter) return;
       const scrollPosition = window.innerHeight + window.scrollY;
-      const threshold = document.documentElement.scrollHeight - 100; // 100px from bottom
+      const threshold = document.documentElement.scrollHeight - 100;
 
       if (scrollPosition >= threshold) {
         setHasVisitedFooter(true);
@@ -106,7 +100,7 @@ export default function NearbyHotelsSearch() {
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll(); // Check on initial load in case page is short
+    handleScroll();
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, [hasVisitedFooter]);
@@ -116,7 +110,6 @@ export default function NearbyHotelsSearch() {
     footerRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   };
 
-  // Fetch the saved destination from the DB using tripId on page load
   useEffect(() => {
     if (!tripId) {
       setLocation("Current Location");
@@ -214,14 +207,14 @@ export default function NearbyHotelsSearch() {
   }, [maxPrice, selectedAmenities, sortBy]);
 
   return (
-    <div className="min-h-screen flex flex-col justify-between relative">
-      <div className="max-w-6xl w-full mx-auto p-4 sm:p-6 space-y-6">
+    <div className="min-h-screen flex flex-col justify-between relative overflow-x-hidden">
+      <div className="max-w-6xl w-full mx-auto p-4 sm:p-6 space-y-5 sm:space-y-6">
         {/* Search Bar Card */}
         <div className="bg-white rounded-2xl shadow-md border border-slate-200 p-4 sm:p-6">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-            {/* Location Input populated from DB */}
-            <div className="md:col-span-4">
-              <label className="block text-l font-notoSerifBalinese tracking-wider text-black-500 mb-1">
+          <div className="grid grid-cols-2 md:grid-cols-12 gap-3 sm:gap-4 items-end">
+            {/* Location Input */}
+            <div className="col-span-2 md:col-span-6">
+              <label className="block text-base sm:text-lg font-notoSerifBalinese tracking-wider text-slate-800 mb-1">
                 Destination
               </label>
               <div className="relative flex items-center">
@@ -230,13 +223,13 @@ export default function NearbyHotelsSearch() {
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   placeholder="Where are you going?"
-                  className="w-full rounded-xl border border-slate-300 pl-3 pr-10 py-2.5 text-sm text-slate-900 focus:border-[#1e3329] focus:outline-none focus:ring-2 focus:ring-[#1e3329]/20"
+                  className="w-full rounded-xl border border-slate-300 pl-3 pr-10 py-2.5 text-base sm:text-sm text-slate-900 focus:border-[#1e3329] focus:outline-none focus:ring-2 focus:ring-[#1e3329]/20"
                 />
                 <button
                   type="button"
                   onClick={handleUseCurrentLocation}
                   title="Use my current location"
-                  className="absolute right-2.5 text-slate-400 hover:text-[#1e3329] transition"
+                  className="absolute right-2.5 p-1 text-slate-400 hover:text-[#1e3329] transition"
                 >
                   {isLocating ? (
                     <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-[#1e3329] border-t-transparent" />
@@ -251,60 +244,58 @@ export default function NearbyHotelsSearch() {
             </div>
 
             {/* Check-In */}
-            <div className="md:col-span-2">
-              <label className="block text-l font-notoSerifBalinese tracking-wider text-black-500 mb-1">
+            <div className="col-span-1 md:col-span-3">
+              <label className="block text-base sm:text-lg font-notoSerifBalinese tracking-wider text-slate-800 mb-1">
                 Check-In
               </label>
               <input
                 type="date"
                 value={checkIn}
                 onChange={(e) => setCheckIn(e.target.value)}
-                className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm text-slate-900 focus:border-[#1e3329] focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 px-2.5 sm:px-3 py-2.5 text-sm text-slate-900 focus:border-[#1e3329] focus:outline-none"
               />
             </div>
 
             {/* Check-Out */}
-            <div className="md:col-span-2">
-              <label className="block text-l font-notoSerifBalinese tracking-wider text-black-500 mb-1">
+            <div className="col-span-1 md:col-span-3">
+              <label className="block text-base sm:text-lg font-notoSerifBalinese tracking-wider text-slate-800 mb-1">
                 Check-Out
               </label>
               <input
                 type="date"
                 value={checkOut}
                 onChange={(e) => setCheckOut(e.target.value)}
-                className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm text-slate-900 focus:border-[#1e3329] focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 px-2.5 sm:px-3 py-2.5 text-sm text-slate-900 focus:border-[#1e3329] focus:outline-none"
               />
             </div>
           </div>
 
-          {/* Filters & Sorting Bar */}
-          <div className="mt-5 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-4">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-medium text-slate-500 mr-1">Filters:</span>
-              {AMENITY_FILTERS.map((amenity) => {
-                const active = selectedAmenities.includes(amenity);
-                return (
-                  <button
-                    key={amenity}
-                    type="button"
-                    onClick={() => toggleAmenity(amenity)}
-                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition ${
-                      active
-                        ? "bg-black text-white border border-black"
-                        : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                    }`}
-                  >
-                    {amenity}
-                  </button>
-                );
-              })}
-            </div>
+          {/* Filters Bar (Horizontal scroll on mobile) */}
+          <div className="mt-4 sm:mt-5 pt-4 border-t border-slate-100 flex items-center gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible">
+            <span className="text-xs font-medium text-slate-500 mr-1 shrink-0">Filters:</span>
+            {AMENITY_FILTERS.map((amenity) => {
+              const active = selectedAmenities.includes(amenity);
+              return (
+                <button
+                  key={amenity}
+                  type="button"
+                  onClick={() => toggleAmenity(amenity)}
+                  className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition ${
+                    active
+                      ? "bg-black text-white border border-black"
+                      : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                  }`}
+                >
+                  {amenity}
+                </button>
+              );
+            })}
           </div>
         </div>
 
         {/* Results Header */}
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-slate-900">
+          <h2 className="text-base sm:text-lg font-bold text-slate-900">
             {filteredHotels.length} {filteredHotels.length === 1 ? "Hotel" : "Hotels"} near{" "}
             <span className="text-[#1e3329]">{location}</span>
           </h2>
@@ -312,7 +303,7 @@ export default function NearbyHotelsSearch() {
 
         {/* Hotel Cards Grid */}
         {filteredHotels.length === 0 ? (
-          <div className="text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-slate-300">
+          <div className="text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-slate-300 px-4">
             <p className="text-slate-600 font-medium">No hotels match your selected filters.</p>
             <button
               type="button"
@@ -326,13 +317,13 @@ export default function NearbyHotelsSearch() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
             {filteredHotels.map((hotel) => (
               <div
                 key={hotel.id}
                 className="group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col sm:flex-row"
               >
-                <div className="relative sm:w-48 h-48 sm:h-auto shrink-0 overflow-hidden bg-slate-200">
+                <div className="relative w-full sm:w-48 h-48 sm:h-auto shrink-0 overflow-hidden bg-slate-200">
                   <img
                     src={hotel.imageUrl}
                     alt={hotel.name}
@@ -353,7 +344,8 @@ export default function NearbyHotelsSearch() {
                           {hotel.name}
                         </h3>
                         <p className="text-xs text-slate-500 mt-0.5">
-                          {hotel.neighborhood} • <span className="font-medium text-slate-700">{hotel.distanceKm} km away</span>
+                          {hotel.neighborhood} •{" "}
+                          <span className="font-medium text-slate-700">{hotel.distanceKm} km away</span>
                         </p>
                       </div>
                       <div className="flex items-center gap-1 bg-amber-50 text-amber-800 px-2 py-1 rounded-lg text-xs font-bold shrink-0">
@@ -374,7 +366,7 @@ export default function NearbyHotelsSearch() {
                     </div>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-slate-100 flex items-end justify-between">
+                  <div className="mt-4 pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
                     <div>
                       <span className="text-xl font-extrabold text-slate-900">
                         ${hotel.pricePerNight}
@@ -385,7 +377,7 @@ export default function NearbyHotelsSearch() {
                       type="button"
                       disabled={isSaving}
                       onClick={() => handleSelectHotelAndDates(hotel.name)}
-                      className="inline-flex items-center justify-center rounded-full border border-black bg-black px-4 py-2 text-xs font-damion text-white transition-all duration-200 hover:bg-white hover:text-black cursor-pointer shadow-sm"
+                      className="w-full sm:w-auto inline-flex items-center justify-center rounded-full border border-black bg-black px-4 py-2.5 sm:py-2 text-xs font-damion text-white transition-all duration-200 hover:bg-white hover:text-black cursor-pointer shadow-sm"
                     >
                       {isSaving ? "Saving..." : "Select Hotel & Dates"}
                     </button>
@@ -397,23 +389,23 @@ export default function NearbyHotelsSearch() {
         )}
       </div>
 
-      {/* Floating Centered Floating Down Arrow */}
+      {/* Floating Centered Down Arrow */}
       {!hasVisitedFooter && (
         <button
           type="button"
           onClick={handleScrollToFooter}
           aria-label="Scroll to footer"
-          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 inline-flex items-center justify-center rounded-full border border-black bg-black p-3 text-white transition-all duration-200 hover:bg-white hover:text-black cursor-pointer shadow-md animate-bounce"
+          className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 inline-flex items-center justify-center rounded-full border border-black bg-black p-3 text-white transition-all duration-200 hover:bg-white hover:text-black cursor-pointer shadow-md animate-bounce"
         >
           <ArrowDown size={18} />
         </button>
       )}
 
-      {/* Footer with Logo on Bottom Left & Change Destination Button on Bottom Right */}
-      <footer ref={footerRef} className="mt-12 border-t border-[#e8e7de]">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 md:px-8">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="relative flex h-20 w-38 items-center justify-center overflow-hidden">
+      {/* Footer */}
+      <footer ref={footerRef} className="mt-10 sm:mt-12 border-t border-[#e8e7de]">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-4 sm:px-5 sm:py-5 md:px-8">
+          <Link href="/" className="flex items-center gap-2 shrink-0">
+            <div className="relative flex h-14 w-24 sm:h-20 sm:w-36 items-center justify-center overflow-hidden">
               <Image
                 src="/logo.png"
                 alt="NextTrip Logo"
@@ -425,7 +417,7 @@ export default function NearbyHotelsSearch() {
 
           <Link
             href="/plan"
-            className="inline-flex items-center gap-2 rounded-full border border-black bg-black px-5 py-3 text-sm font-damion text-white transition-all duration-200 hover:bg-white hover:text-black"
+            className="inline-flex items-center gap-2 rounded-full border border-black bg-black px-4 py-2.5 sm:px-5 sm:py-3 text-xs sm:text-sm font-damion text-white transition-all duration-200 hover:bg-white hover:text-black"
           >
             <ArrowLeft size={16} /> Change destination
           </Link>

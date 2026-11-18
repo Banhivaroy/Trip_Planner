@@ -21,21 +21,8 @@ export default function MarqueeRows({ destinations = DEFAULT_DESTINATIONS }: Mar
   const repeatedItems = [...destinations, ...destinations, ...destinations, ...destinations];
 
   return (
-    <div 
-      className="relative w-full overflow-hidden py-4 flex flex-col gap-6 select-none"
-      style={{
-        // Smoothly fades out text near the edges and creates a radial fade-out at the center
-        WebkitMaskImage: `
-          linear-gradient(to right, transparent, black 15%, black 85%, transparent),
-          radial-gradient(circle at center, transparent 20%, black 60%)
-        `,
-        WebkitMaskComposite: "source-in",
-        maskImage: `
-          linear-gradient(to right, transparent, black 15%, black 85%, transparent),
-          radial-gradient(circle at center, transparent 20%, black 60%)
-        `,
-        maskComposite: "intersect",
-      }}
+    <div
+      className="relative w-full overflow-hidden py-3 sm:py-4 flex flex-col gap-4 sm:gap-6 select-none [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] md:[mask-image:linear-gradient(to_right,transparent,black_15%,black_85%,transparent),radial-gradient(circle_at_center,transparent_20%,black_60%)] md:[mask-composite:intersect]"
     >
       {/* Top Row: Moves Left */}
       <MarqueeTrack items={repeatedItems} direction="left" speed={30} />
@@ -58,7 +45,7 @@ function MarqueeTrack({
   return (
     <div className="flex overflow-hidden whitespace-nowrap">
       <motion.div
-        className="flex shrink-0 items-center gap-8 px-4"
+        className="flex shrink-0 items-center gap-5 sm:gap-8 px-4"
         initial={{ x: direction === "left" ? "0%" : "-50%" }}
         animate={{ x: direction === "left" ? "-50%" : "0%" }}
         transition={{
@@ -68,11 +55,13 @@ function MarqueeTrack({
         }}
       >
         {items.map((destination, index) => (
-          <div key={index} className="flex items-center gap-6">
-            <span className="text-xl font-bold tracking-wider uppercase text-emerald-900/40 opacity-75">
+          <div key={index} className="flex items-center gap-4 sm:gap-6">
+            <span className="text-base sm:text-xl font-bold tracking-wider uppercase text-emerald-900/50 md:text-emerald-900/40 opacity-85">
               {destination}
             </span>
-            <span className="text-emerald-900/40 font-extrabold text-xl">⟶</span>
+            <span className="text-emerald-900/50 md:text-emerald-900/40 font-extrabold text-base sm:text-xl">
+              ⟶
+            </span>
           </div>
         ))}
       </motion.div>
