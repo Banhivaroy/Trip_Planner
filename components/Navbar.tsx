@@ -37,6 +37,12 @@ export default function Navbar({session}:{session : Session | null}){
              <button className="transition hover:text-[#DC143C]" onClick={() => logOut()}>
               Log Out
             </button>
+            <Link
+            href="/plan"
+            className="inline-flex items-center gap-2 rounded-full border border-black bg-black px-5 py-3 text-sm font-damion text-white transition-all duration-200 hover:bg-white hover:text-black"
+          >
+            Plan a trip <ArrowRight size={16} />
+          </Link>
              </>
             ) : (
               <button className="transition hover:text-[#214b37]" onClick={() => logIn()}>
@@ -45,12 +51,7 @@ export default function Navbar({session}:{session : Session | null}){
             )}
           </div>
 
-          <Link
-            href="/plan"
-            className="inline-flex items-center gap-2 rounded-full border border-black bg-black px-5 py-3 text-sm font-damion text-white transition-all duration-200 hover:bg-white hover:text-black"
-          >
-            Plan a trip <ArrowRight size={16} />
-          </Link>
+      
         </nav>
       </header>
     </>
