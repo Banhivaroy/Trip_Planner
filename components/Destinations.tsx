@@ -61,7 +61,7 @@ export default function Destinations() {
   const [searchQuery, setSearchQuery] = useState("");
   const [apiResults, setApiResults] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
+  const [savingId, setSavingId] = useState<string | number | null>(null);
 
   useEffect(() => {
     if (!searchQuery.trim()) {
@@ -85,8 +85,12 @@ export default function Destinations() {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  const handlePlanTrip = async (destinationTitle: string, locationStr: string) => {
-    setIsSaving(true);
+  const handlePlanTrip = async (
+    destKey: string | number,
+    destinationTitle: string,
+    locationStr: string
+  ) => {
+    setSavingId(destKey);
     try {
       const res = await fetch("/api/trips", {
         method: "POST",
@@ -103,7 +107,7 @@ export default function Destinations() {
     } catch (err) {
       console.error("Failed to save destination to DB:", err);
     } finally {
-      setIsSaving(false);
+      setSavingId(null);
     }
   };
 
@@ -150,54 +154,59 @@ export default function Destinations() {
         <div className="text-center py-16 text-gray-500">Loading destinations...</div>
       ) : filteredDestinations.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-          {filteredDestinations.map((dest) => (
-            <div
-              key={dest.id || dest._id}
-              className="group bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col"
-            >
-              <div className="relative h-44 sm:h-52 w-full overflow-hidden bg-gray-100">
-                {dest.category && (
-                  <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-semibold text-gray-800 z-10">
-                    {dest.category}
-                  </span>
-                )}
-              </div>
+          {filteredDestinations.map((dest, index) => {
+            const destKey = dest.id || dest._id || index;
+            const isCurrentSaving = savingId === destKey;
 
-              <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-1">
-                    <span className="flex items-center text-xs text-gray-500 font-medium truncate">
-                      <MapPin className="w-3.5 h-3.5 mr-1 text-blue-500 shrink-0" />
-                      <span className="truncate">{dest.location}</span>
+            return (
+              <div
+                key={destKey}
+                className="group bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col"
+              >
+                <div className="relative h-44 sm:h-52 w-full overflow-hidden bg-gray-100">
+                  {dest.category && (
+                    <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-semibold text-gray-800 z-10">
+                      {dest.category}
                     </span>
-                    <span className="flex items-center text-xs font-semibold text-gray-700 shrink-0">
-                      <Star className="w-3.5 h-3.5 mr-1 fill-amber-400 text-amber-400" />
-                      {dest.rating}
-                    </span>
+                  )}
+                </div>
+
+                <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <span className="flex items-center text-xs text-gray-500 font-medium truncate">
+                        <MapPin className="w-3.5 h-3.5 mr-1 text-blue-500 shrink-0" />
+                        <span className="truncate">{dest.location}</span>
+                      </span>
+                      <span className="flex items-center text-xs font-semibold text-gray-700 shrink-0">
+                        <Star className="w-3.5 h-3.5 mr-1 fill-amber-400 text-amber-400" />
+                        {dest.rating}
+                      </span>
+                    </div>
+
+                    <h2 className="text-base sm:text-lg font-notoSerifBalinese text-gray-900 group-hover:text-blue-600 transition-colors">
+                      {dest.title}
+                    </h2>
+                    <p className="mt-2 text-sm text-gray-600 line-clamp-2">
+                      {dest.description}
+                    </p>
                   </div>
 
-                  <h2 className="text-base sm:text-lg font-notoSerifBalinese text-gray-900 group-hover:text-blue-600 transition-colors">
-                    {dest.title}
-                  </h2>
-                  <p className="mt-2 text-sm text-gray-600 line-clamp-2">
-                    {dest.description}
-                  </p>
-                </div>
-
-                <div className="mt-5 pt-4 border-t border-gray-100 flex items-center justify-end">
-                  <button
-                    type="button"
-                    disabled={isSaving}
-                    onClick={() => handlePlanTrip(dest.title, dest.location)}
-                    className="w-full sm:w-auto flex items-center justify-center gap-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 px-4 py-2.5 sm:py-2 rounded-lg text-sm font-semibold transition-colors cursor-pointer"
-                  >
-                    <Calendar className="w-4 h-4" />
-                    {isSaving ? "Saving..." : "Plan Trip"}
-                  </button>
+                  <div className="mt-5 pt-4 border-t border-gray-100 flex items-center justify-end">
+                    <button
+                      type="button"
+                      disabled={isCurrentSaving}
+                      onClick={() => handlePlanTrip(destKey, dest.title, dest.location)}
+                      className="w-full sm:w-auto flex items-center justify-center gap-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 disabled:opacity-60 px-4 py-2.5 sm:py-2 rounded-lg text-sm font-semibold transition-colors cursor-pointer"
+                    >
+                      <Calendar className="w-4 h-4" />
+                      {isCurrentSaving ? "Saving..." : "Plan Trip"}
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       ) : (
         <div className="text-center py-16 bg-gray-50 rounded-2xl border border-dashed border-gray-200 px-4">
